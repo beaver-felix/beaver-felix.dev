@@ -1,11 +1,25 @@
 module Main exposing (..)
+
 import Browser
 import Browser.Navigation as Nav
-import Html exposing (..)
-import Html.Keyed as Keyed
-import Html.Lazy exposing (lazy)
-import Html.Attributes exposing (..)
+import Html
+import Html.Attributes
 import Url
+import Url.Parser as Parser exposing (Parser, (</>), custom, fragment, map, oneOf, s, top)
+
+-- optim --
+
+-- import Html.Keyed as Keyed
+-- import Html.Lazy exposing (lazy)
+
+-- page --
+
+import Page.Blog
+import Page.Home
+import Page.Map
+import Page.Policy
+import Page.Profile
+import Page.Project
 
 -- main --
 
@@ -16,19 +30,28 @@ main =
     , view = view
     , update = update
     , subscriptions = subscriptions
-    , onUrlChange = UrlChanged
     , onUrlRequest = LinkClicked
+    , onUrlChange = UrlChanged
     }
+
+type alias Model = 
+  { key  : Nav.Key
+  , page : Page
+  }
+
+type Page
+  = NotFound Data -- todo --
+  | Blog Page.Blog.Model
+  | Home Page.Home.Model
+  | Map Page.Map.Model
+  | Policy Page.Policy.Model
+  | Profile Page.Profile.Model
+  | Project Page.Project.Model
 
 -- init --
 
-type alias Model = 
-  { key : Nav.Key
-  , url : Url.Url
-  }
-
 init : () -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
-init flags url key =
+init _ url key =
   ( Model key url, Cmd.none )
 
 -- msg --
@@ -54,24 +77,21 @@ update msg model =
       , Cmd.none
       )
 
--- subscriptions --
-
-subscriptions : Model -> Sub Msg
-subscriptions _ = 
-  Sub.none
-
 -- view --
 
 view : Model -> Browser.Document Msg
 view model = 
-  { title = "beaver-felix's url interceptor"
+  { title = "Beaver Felix"
   , body = 
     [ text "Current url > "
     , b [] [ text ( Url.toString model.url ) ]
     , ul []
       [ viewlink "/home"
-      , viewlink "/profile"
       , viewlink "/blog"
+      , viewlink "/policy"
+      , viewlink "/profile"
+      , viewlink "/project"
+      , viewlink "/site-map"
       ]
     ]
   }
