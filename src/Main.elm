@@ -20,6 +20,7 @@ import Page.Map
 import Page.Policy
 import Page.Profile
 import Page.Project
+import Page.Publication
 
 -- main --
 
@@ -47,6 +48,7 @@ type Page
   | Policy Page.Policy.Model
   | Profile Page.Profile.Model
   | Project Page.Project.Model
+  | Publication Page.Publication.Model
 
 -- init --
 
